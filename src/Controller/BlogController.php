@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use App\Repository\ArticleRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,18 +28,20 @@ class BlogController extends AbstractController
 
     //Nouvelle syntaxe
 
-    #[Route('/blog', name: 'listesDesarticles')]
+    /*
+        #[Route('/blog', name: 'listesDesarticles')]
     public function index(ManagerRegistry $doctrine): Response
     {
-        $repo = $doctrine->getRepository(Article::class);
-        $articles= $repo->findAll();
+        $repository = $doctrine->getRepository(Article::class);
+
+        $articles= $repository->findAll();
 
         return $this->render('blog/index.html.twig', [
             'controller_name' => 'BlogController',
             'articles' => $articles
         ]);
     }
-
+*/
     #[Route('/', name: 'home')]
     public function home()
     {
@@ -47,7 +50,7 @@ class BlogController extends AbstractController
             'prenom' => 'Yohane'
         ]);
     }
-
+/*
     #[Route('blog/{id}', name:'blog_show')]
     public function show(ManagerRegistry $doctrine, $id){
         $repo = $doctrine->getRepository(Article::class);
@@ -56,4 +59,46 @@ class BlogController extends AbstractController
             'article' => $article
         ]);
     }
+*/
+
+    //INJECTION DE Dépendance : pour aller plus vite avec des fonctions plus courtes parce qu'on a plus besoin
+    // du manager pour trouver mon repo je trouve directement en spécifiant mon repo en paramètre de ma fonction
+
+    #[Route('/blog', name: 'listesDesarticles')]
+    public function index(ArticleRepository $repository): Response
+    {
+        $articles= $repository->findAll();
+
+        return $this->render('blog/index.html.twig', [
+            'controller_name' => 'BlogController',
+            'articles' => $articles
+        ]);
+    }
+
+    /*
+    #[Route('blog/{id}', name:'blog_show')]
+    public function show(ArticleRepository $repo, $id){
+        $article = $repo->find($id);
+        return $this->render('blog/show.html.twig', [
+            'article' => $article
+        ]);
+    }
+
+    */
+
+    //PLUS LOIN encore grâce au param converter qui comprend que l'article dont on parle c'est l'article qui a pour id,
+    //l'id indiqué dans ma route
+
+    #[Route('blog/{id}', name:'blog_show')]
+    public function show(Article $article){
+
+        return $this->render('blog/show.html.twig', [
+            'article' => $article
+        ]);
+    }
+
+
+
+
+
 }

@@ -3,12 +3,12 @@
 {% block body %}
     <div class="container">
         <article>
-            <h2>Titre de l'article</h2>
-            <div class="metadata">Écrit le 29 Octobre 2022 à 1h18 à Nantes dans la catégorie dev</div>
-            <div class="content"><img src="https://via.placeholder.com/300.png/DAD0D8/?text=by+m-yohane" alt="">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque nesciunt quo quos.</p>
-                <p>Aut ipsum iusto maxime, nisi nobis recusandae repudiandae tempore totam unde vel?</p>
-                <a href="{{ path('blog_show') }}" class="btn btn-primary">En savoir plus</a></div>
+            <h2>{{ article.title }}</h2>
+            <div class="metadata">Écrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i') }} à Nantes dans la catégorie dev</div>
+            <div class="content">
+                <img src="{{ article.image }}" alt="">
+                {{ article.content | raw}}
+            </div>
         </article>
         <hr>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
